@@ -1,0 +1,282 @@
+
+API doc
+
+Message format:
+---------
+
+All responses are wrapped like this:
+If the response has an error you have to check the given status code in the http header and the following messages.
+{
+  "success": false,
+  "mvMessages": [
+    {
+      "message": "You are not authorized to execute this action",
+      "severity": "info",
+      "global": true
+    }
+  ]
+}
+
+And if there is no error the "response" field holds the data:
+{
+  "success": true,
+  "response": {
+    "about": "I really don't care about anything except steak",
+    ....
+  }
+}
+
+
+User API:
+---------
+
+Self user data.
+URL: /api/v1/app/user
+METHOD: GET
+PATH VARIABLES: -
+PARAMETERS: -
+COMMENTS: Returns with the current user's profile info (if any)
+RETURN: {
+      "companyID": "parks",
+      "countryCode": "GBR",
+      "department": "Fire Department",
+      "email": "al@parks.com",
+      "firstName": "Al",
+      "fullName": "Al Connor",
+      "id": "user-al-connor",
+      "interests": "Discgolf,Clashofclans",
+      "lastName": "Connor",
+      "location": "Pawnee",
+      "payrollID": "1",
+      "personalityType": "ESFP",
+      "title": "Fire Chief",
+      "birthDateStr": "8/12/16",
+      "calculatedFirstName": "Al",
+      "hireDateStr": "12/29/14",
+      "birthPrivacyStr": "Aug 12"
+    }
+
+User by ID.
+URL: /api/v1/app/user/{id}
+METHOD: GET
+PATH VAIRABLES: the user ID
+PARAMETERS: -
+COMMENTS: Returns with the user's profile info identified by the 'id' path variable
+RETURN: {user data}
+
+List users.
+URL: /api/v1/app/user/list
+METHOD: GET
+PATH VARIABLES: -
+PARAMETERS: 
+  sort=+firstName,-createdDate 
+  scope=TEAM|EXTM|DEPT|CMPY
+  select=list,	of,fields
+  page=1
+  pageLimit=20
+  name=name
+  department=deptname
+  directReports>0
+COMMENTS: sorting can be on any field, '+' (asc) is default. 'scope' is special in that it helps select a group relative to the current logged in user (team, extended team, department, company). 'select', when specified controls which fields are returned from the search - the list of available fields are those returned when 'select' is not included. 'name' is a special parameter that will attempt to do a like match on firstName, lastName, and preferredName. All other parameters will be assumed to be field names and matches (=, <, >).
+RETURN: [{user data},...]
+
+
+Company value API:
+-----------------------
+
+List company values.
+URL: /api/v1/app/companyvalue/list
+METHOD: GET
+PARAMETERS: 
+COMMENTS: Retruns the list of company values
+RETURN: [{
+      "id": "value-community-now",
+      "name": "Community Now",
+      "description": "We're here for the community.",
+      "isActive": false
+    },...]
+
+
+Feed API:
+---------
+
+List feeds.
+URL: /api/v1/app/feed/list
+METHOD: GET
+PATH VARIABLES: -
+PARAMETERS: 
+  like=true|false
+  comment=true|false
+  scope=TEAM|EXTM|DEPT|CMPY
+  page=0
+  pageLimit=20
+  feedTypes=PRSN,GNRL,GOAL,INST,BDAY,ANVY,IDEA,ABOT,APPR,BDGE
+  startdate=1/1/16
+  enddate=1/1/17
+
+COMMENTS: Returns the list of feeds between the specified dates and filters
+RETURN: [{
+      "id": "eugene2carl",
+      "subject": {
+        "avatarUrl": "avatar/parks/user-carl-lorthner.png",
+        "department": "Parks",
+        "firstName": "Carl",
+        "fullName": "Carl Lorthner",
+        "id": "user-carl-lorthner",
+        "lastName": "Lorthner",
+        "calculatedFirstName": "Carl"
+      },
+      "source": {
+        "fullName": "Eugene Dredge",
+        "id": "user-eugene-dredge"
+      },
+      "numberOfLikes": 0,
+      "numberOfComments": 0,
+      "numberOfVolunteers": 0,
+      "feedType": "APPR",      
+      "title": "Team Spirit",
+      "note": "My brother... you make work tolerable.",
+      "createdByID": "user-eugene-dredge",
+      "createdByName": "Eugene Dredge",
+      "points": 0,
+      "url": null,
+      "shortfeedTitle": "Team Spirit",
+      "active": 1,
+      "companyID": "parks",
+      "feedTypeEnum": "APPRECIATE",
+      "customAppreciationFeedTitle": "Carl Lorthner has received a thanks for \"Team Spirit\" from Eugene Dredge",
+      "goLiveDateStr": "1/11/16",
+    },...]
+
+
+Appreciation API:
+----------------
+
+
+Create appreciations.
+URL: /api/v1/app/appreciation
+METHOD: PUT
+PATH VARIABLES: -
+PARAMETERS: -
+REQUEST BODY:
+  {
+    "amount":0,
+    "amountType":"GM",
+    "privateAppreciation":false,
+    "note":"Just becasue",
+    "companyValueID":"value-community-now",
+    "toUserIDs":["user-al-connor"],
+    "toUserEmails":["andy@parks.com"],
+    "toUserExternalIDs":["3"]
+  }
+COMMENTS: All the "toUser..." fields can be used to identify the target users.
+RETURN: The created award-received objects for each user.
+  [{
+      "id": "46582579-6120-feed-afe6-6e0237ab51a5",
+      "subject": {
+        "avatarUrl": "avatar/parks/user-al-connor.png",
+        "department": "Fire Department",
+        "firstName": "Al",
+        "fullName": "Al Connor",
+        "id": "user-al-connor",
+        "lastName": "Connor",
+        "calculatedFirstName": "Al"
+      },
+      "source": {
+        "fullName": "Motivosity"
+      },
+      "numberOfLikes": 0,
+      "numberOfComments": 0,
+      "numberOfVolunteers": 0,
+      "feedType": "APPR",
+      "readableDate": "just now",
+      "title": "Community Now",
+      "note": "asd",
+      "createdByName": "Motivosity",
+      "points": 0,
+      "url": null,
+      "shortfeedTitle": "Community Now",
+      "active": 1,
+      "feedTypeEnum": "APPRECIATE",
+      "customAppreciationFeedTitle": "Al Connor has received a thanks for \"Community Now\" from Motivosity",
+      "goLiveDateStr": "6/13/16",
+    },...]
+
+    
+Award API:
+---------
+
+List awards.
+URL: /api/v1/app/award/list
+METHOD: GET
+PATH VARIABLES: -
+PARAMETERS: 
+  awardScope=true|false
+  page=0
+  sortBy=awardName <<or other field name>>
+  sortAsc=true | false
+COMMENTS: Returns the list of badges
+RETURN: 
+    [{
+      "id": "award-jjs",
+      "type": "BDGE",
+      "schedule": "MTLY",
+      "anniversaryYear": 0,
+      "awardDollars": 15,
+      "awardName": "JJ's Diner Award",
+      "anniversaryIsOverride": false,
+      "budget": 0,
+      "maxPerYear": 0,
+      "lastAwardedDate": 1464867008000,
+      "description": "Keeping Your Head Up During Tough Times",
+      "expanded": false,
+      "annualRadioButtonValue": true,
+      "upComingBadgeAward": false,
+      "lastAwardedDateReadable": "11 days ago",
+      "awardManagerName": "Ron Swanson",
+      "nomination": true,
+      "awardOwners": [
+        {
+          "avatarUrl": "avatar/parks/user-ron-swanson.jpg",
+          "fullName": "Ron Swanson",
+          "id": "user-ron-swanson"
+        }
+      ],
+      "moneyAssociated": 0,
+      "totalNominations": 0,
+      "department": null,
+      "companyID": "parks",
+      "eventScheduledLabel": "Monthly",
+      "anniversaryGivenDetails": "award.given.every.year",
+      "anniversaryOverviewText": "Every Year",
+      "awardOverdue": false,
+      "estimatedAnnualBudget": 0,
+      "nextAwardDateStr": "in 2 weeks"
+    },...]
+
+
+Give awards.
+URL: /api/v1/app/award/{awardId}/giveaward
+METHOD: PUT
+PATH VARIABLES: the award identifier
+PARAMETERS: -
+REQUEST BODY:
+  {
+    "amount": "1",
+    "note":"Just because",
+    "toUserIDs":["user-al-connor"],
+    "toUserEmails":["andy@parks.com"],
+    "toUserExternalIDs":["3"]
+  }
+COMMENTS: All the "toUser..." fields can be used to identify the target users.
+RETURN: The created award-received objects for each user.
+  [{
+    "count": 0,
+    "name": "JJ's Diner Award",
+    "awardId": "award-jjs",
+    "icon": "badge/parks/jjs-diner.png",
+    "createdDate": 1465825263079,
+    "toUserName": "Al Connor",
+    "toUserID": "user-al-connor",
+    "readableCreatedDate": "just now"
+  },...]
