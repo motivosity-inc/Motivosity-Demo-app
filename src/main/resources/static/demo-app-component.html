@@ -1,0 +1,15 @@
+<html>
+<body>
+	<h1>Motivosity- OAuth Demo</h1>
+
+	<!-- The getUserList() function will handle your click on this button. See: /angular/app/app.component.js -->
+	<button (click)='getUserList()'>List Motivosity Users</button>
+	<br>
+	<a href='/api/authorize'>Authorize Test App at Motivosity</a>
+
+	<!-- This section lists the users if the 'userList' variable has any value. See: /angular/app/app.component.js -->
+	<ul>
+		<li *ngFor='let user of userList'>{{user.name}}</li>
+	</ul>
+</body>
+</html>

@@ -2,11 +2,7 @@
 
 	app.AppComponent = ng.core.Component({
 			selector: 'demo-app',
-			template: "<h1>Motivosity- OAuth Demo</h1> " +
-			"<button (click)='getUserList()'>List Motivosity Users</button><br>" +
-			"<a href='/api/authorize'>Authorize Test App at Motivosity</a>" +
-			"<ul><li *ngFor='let user of userList'>{{user.name}}</li></ul>"
-		})
+			templateUrl: '../../demo-app-component.html'})
 		.Class({
 			constructor: function () {
 				this.userList = [];
