@@ -81,6 +81,43 @@ COMMENTS: sorting can be on any field, '+' (asc) is default. 'scope' is special 
 RETURN: [{user data},...]
 
 
+Sync Users
+URL: /api/v1/user/sync
+METHOD: POST
+INPUT BODY: [{
+“firstName”:”Ron”,
+“lastName”:”Swanson”,
+“middleName”:””,
+“preferredName”:””,
+“hireDate”:”9/7/2012″,
+“birthDate”:”7/4/1967″,
+“department”:”Parks”,
+“email”:”ron@parks.com”,
+“countryCode”:”USA”,
+“payrollID”:”21″,
+“personalityType”:”ISTJ”,
+“title”:”Director”,
+“phone”:”888-222-1111″,
+“supervisorPayrollID”:”12″,
+“keepWithDirectReports”:true|false,
+“function”:”UPDATE|CREATE|DELETE”}, …
+]
+RETURNS: [{user data…}]
+COMMENTS: This will synchronize data from a list of users being passed in. Any empty parameter will update the user data to empty. Any omitted parameter will not be considered. ‘function’ is optional, but helpful if you want to delete or create a user from the ‘sync’ command. When moving users around the org chart, update the supervisorPayrollID and determine if you want to move the user along with their direct reports, or to leave the direct reports in place by setting keepWithDirectReports. If the direct reports are left behind, they will be promoted one level to report to the moved user’s old supervisor.
+
+Change PayrollIDs
+URL: /api/v1/user/changeExternalID
+METHOD: POST
+INPUT BODY: [{
+“oldPayrollID”:”old-system”,
+“payrollID”:”21″}, …
+]
+RETURNS: [{user data…}]
+COMMENTS: This will update the payrollID being used for a list of users. This is most likely only necessary when changing HRIS systems.
+
+
+
+
 Company value API:
 -----------------------
 
