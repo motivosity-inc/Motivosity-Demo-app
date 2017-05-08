@@ -41,7 +41,8 @@ import com.motivosity.model.OAuthToken;
 @EnableAutoConfiguration
 public class DemoController {
 
-	public static final String MOTIVOSITY_BASE_URL = "https://staging.motivosity.com";
+//	public static final String MOTIVOSITY_BASE_URL = "https://staging.motivosity.com";
+	public static final String MOTIVOSITY_BASE_URL = "https://localhost/motivosity";
 
 	public static final String CLIENT_ID = "testapp";
 
@@ -49,13 +50,13 @@ public class DemoController {
 
 	public static final String REDIRECT_URI = "http://localhost:9080/api/authorize/code";
 
-	public static final String REQUIRED_SCOPES = "user userlist badge appr platform";
+	public static final String REQUIRED_SCOPES = "user,platform";//,badge,appr,platform
 
 	public static String accessToken;//never store access token in a static variable. This is just a demo :)
 
 	@RequestMapping(value = "/motivosity/userlist", method = RequestMethod.GET)
 	public List<MvUser> getUser(HttpServletResponse response) throws URISyntaxException, IOException, GeneralSecurityException {
-		Object responseObject = callMotivosityApi("/api/v1/app/user/list");
+		Object responseObject = callMotivosityApi("/api/v2/user/list");
 
 		List<MvUser> userList = new ArrayList<>();
 		if (responseObject == null) {
