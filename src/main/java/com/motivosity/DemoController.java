@@ -42,7 +42,8 @@ import com.motivosity.model.OAuthToken;
 public class DemoController {
 
 //	public static final String MOTIVOSITY_BASE_URL = "https://staging.motivosity.com";
-	public static final String MOTIVOSITY_BASE_URL = "https://localhost/motivosity";
+//	public static final String MOTIVOSITY_BASE_URL = "https://localhost/motivosity";
+	public static final String MOTIVOSITY_BASE_URL = "https://mv.com/motivosity";
 
 	public static final String CLIENT_ID = "testapp";
 
@@ -50,9 +51,9 @@ public class DemoController {
 
 	public static final String REDIRECT_URI = "http://localhost:9080/api/authorize/code";
 
-	public static final String REQUIRED_SCOPES = "user,platform";//,badge,appr,platform
+	public static final String REQUIRED_SCOPES = "user badge appr";
 
-	public static String accessToken;//never store access token in a static variable. This is just a demo :)
+	public static OAuthToken token;//never store access token in a static variable. This is just a demo :)
 
 	@RequestMapping(value = "/motivosity/userlist", method = RequestMethod.GET)
 	public List<MvUser> getUser(HttpServletResponse response) throws URISyntaxException, IOException, GeneralSecurityException {
@@ -81,8 +82,8 @@ public class DemoController {
 		ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(createAllTrustingClient());
 		Invocation.Builder builder = new ResteasyClientBuilder().httpEngine(engine).build().target(MOTIVOSITY_BASE_URL + path).request();
 
-		if (accessToken != null) {
-			builder.header("Authorization", "Bearer " + accessToken);
+		if (token != null) {
+			builder.header("Authorization", "Bearer " + token.getAccessToken());
 		}
 
 		System.out.println("\n>> calling endpoint: " + path);
@@ -134,7 +135,7 @@ public class DemoController {
 		UriBuilder uriBuilder = UriBuilder.fromUri(new URI(MOTIVOSITY_BASE_URL + "/oauth2/v1/token"));
 		uriBuilder.queryParam("code", code);
 		uriBuilder.queryParam("client_id", CLIENT_ID);
-		uriBuilder.queryParam("client_secret", CLIENT_SECRET);
+		uriBuilder.queryParam("client_secret", CLIENT_SECRET); //TODO ?????? not allowed here?
 		uriBuilder.queryParam("redirect_uri", REDIRECT_URI);
 		uriBuilder.queryParam("grant_type", "authorization_code");
 
@@ -150,8 +151,7 @@ public class DemoController {
 		System.out.println("<< response: " + responseText);
 
 		if (status == 200) {
-			OAuthToken token = new ObjectMapper().readValue(responseText, OAuthToken.class);
-			accessToken = token.getAccessToken();
+			token = new ObjectMapper().readValue(responseText, OAuthToken.class);
 
 		} else {
 			System.out.println("Token endpoint returned an error: " + status);
@@ -167,13 +167,47 @@ public class DemoController {
 		response.sendRedirect("/index.html");
 	}
 
+	@RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
+	public void refreshToken() throws URISyntaxException, IOException, GeneralSecurityException {
+		UriBuilder uriBuilder = UriBuilder.fromUri(new URI(MOTIVOSITY_BASE_URL + "/oauth2/v1/token"));
+		uriBuilder.queryParam("client_id", CLIENT_ID);
+		uriBuilder.queryParam("client_secret", CLIENT_SECRET); //TODO ??????
+		uriBuilder.queryParam("grant_type", "refresh_token");
+		uriBuilder.queryParam("refresh_token", token.getRefreshToken());
+
+		System.out.println("\n>> calling token endpoint: " + uriBuilder.toTemplate());
+
+		ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(createAllTrustingClient());
+		Invocation.Builder builder = new ResteasyClientBuilder().httpEngine(engine).build().target(uriBuilder).request();
+		Response restResponse = builder.post(null);
+		String responseText = restResponse.readEntity(String.class);
+		int status = restResponse.getStatus();
+		restResponse.close();
+
+		System.out.println("<< response: " + responseText);
+
+		if (status == 200) {
+			token = new ObjectMapper().readValue(responseText, OAuthToken.class);
+
+		} else {
+			System.out.println("Token endpoint returned an error: " + status);
+
+			MvApiResponse apiResponse = new ObjectMapper().readValue(responseText, MvApiResponse.class);
+			if (apiResponse != null && apiResponse.getMvMessages() != null) {
+				for (MvMessage message : apiResponse.getMvMessages()) {
+					System.out.println("\t\t- " + message.getMessage());
+				}
+			}
+		}
+	}
+
 	/**
 	 * Motivosity authorization server calls back this 'revoke URI' when the user revokes app inside Motivosity.
 	 */
 	@RequestMapping(value = "/revoke", method = RequestMethod.GET)
 	public void revoke(@RequestParam(value = "userId") String userId) throws URISyntaxException, IOException {
 		System.out.println("Motivosity user: " + userId + " revoked authorization.");
-		accessToken = null;
+		token = null;
 	}
 
 	private DefaultHttpClient createAllTrustingClient() throws GeneralSecurityException {

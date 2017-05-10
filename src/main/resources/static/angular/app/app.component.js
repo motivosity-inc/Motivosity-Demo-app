@@ -5,13 +5,30 @@
 			templateUrl: '../../demo-app-component.html'})
 		.Class({
 			constructor: function () {
-				this.userList = [];
+				var component = this;
+				component.userList = [];
 
 				this.getUserList = function () {
 					var request = new XMLHttpRequest();
-					request.open("GET", "/api/motivosity/userlist", false);
-					request.send(null);
-					this.userList = JSON.parse(request.responseText);
+					request.open("GET", "/api/motivosity/userlist", true);
+					request.send();
+
+					request.onreadystatechange = function() {
+						if(request.readyState == XMLHttpRequest.DONE && request.status == 200) {
+							component.userList = JSON.parse(request.responseText);
+						}
+					}
+				}
+				
+				this.refreshToken = function () {
+					var request = new XMLHttpRequest();
+					request.open("GET", "/api/refreshToken", true);
+					request.onreadystatechange = function() {
+						if(request.readyState == XMLHttpRequest.DONE && request.status == 200) {
+							component.userList = [];
+						}
+					}
+					request.send();
 				}
 			}
 		});
