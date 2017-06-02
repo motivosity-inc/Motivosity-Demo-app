@@ -41,9 +41,7 @@ import com.motivosity.model.OAuthToken;
 @EnableAutoConfiguration
 public class DemoController {
 
-//	public static final String MOTIVOSITY_BASE_URL = "https://staging.motivosity.com";
-//	public static final String MOTIVOSITY_BASE_URL = "https://localhost/motivosity";
-	public static final String MOTIVOSITY_BASE_URL = "https://mv.com/motivosity";
+	public static final String MOTIVOSITY_BASE_URL = "http://localhost:8080/motivosity";
 
 	public static final String CLIENT_ID = "testapp";
 
@@ -51,7 +49,7 @@ public class DemoController {
 
 	public static final String REDIRECT_URI = "http://localhost:9080/api/authorize/code";
 
-	public static final String REQUIRED_SCOPES = "user badge appr";
+	public static final String REQUIRED_SCOPES = "default";
 
 	public static OAuthToken token;//never store access token in a static variable. This is just a demo :)
 
