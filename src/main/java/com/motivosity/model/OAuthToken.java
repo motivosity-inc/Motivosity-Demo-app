@@ -1,16 +1,11 @@
 package com.motivosity.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class OAuthToken {
 
-	@JsonProperty("access_token")
 	private String accessToken;
 
-	@JsonProperty("refresh_token")
 	private String refreshToken;
 
-	@JsonProperty("expires_in")
 	private long expiresIn;
 
 	public String getAccessToken() {

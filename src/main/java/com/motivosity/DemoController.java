@@ -42,14 +42,18 @@ import com.motivosity.model.OAuthToken;
 public class DemoController {
 
 	public static final String MOTIVOSITY_BASE_URL = "https://staging.motivosity.com";
+	
+	//public static final String MOTIVOSITY_BASE_URL = "http://localhost:8080/motivosity/";
 
-	public static final String CLIENT_ID = "testapp";
+	public static final String APP_ID = "testapp";
 
-	public static final String CLIENT_SECRET = "testapp_passwd";
+	public static final String APP_SECRET = "testapp_passwd";
 
 	public static final String REDIRECT_URI = "http://localhost:9080/api/authorize/code";
 
-	public static final String REQUIRED_SCOPES = "user userlist badge appr platform";
+	//public static final String REQUIRED_SCOPES = "user userlist badge appr platform";
+	
+	public static final String REQUIRED_SCOPES = "default";
 
 	public static String accessToken;//never store access token in a static variable. This is just a demo :)
 
@@ -112,9 +116,9 @@ public class DemoController {
 	@RequestMapping(value = "/authorize", method = RequestMethod.GET)
 	public void authorize(HttpServletResponse response) throws URISyntaxException, IOException {
 		UriBuilder uriBuilder = UriBuilder.fromUri(new URI(MOTIVOSITY_BASE_URL + "/oauth2/v1/auth"));
-		uriBuilder.queryParam("client_id", CLIENT_ID);
-		uriBuilder.queryParam("redirect_uri", REDIRECT_URI);
-		uriBuilder.queryParam("response_type", "code");
+		uriBuilder.queryParam("appId", APP_ID);
+		uriBuilder.queryParam("redirectUri", REDIRECT_URI);
+		uriBuilder.queryParam("responseType", "code");
 		uriBuilder.queryParam("scope", REQUIRED_SCOPES);
 
 		System.out.println("\n>> redirecting to: " + uriBuilder.toTemplate());
@@ -132,10 +136,10 @@ public class DemoController {
 	public void checkCode(@RequestParam(value = "code", required = true) String code, HttpServletResponse response) throws URISyntaxException, IOException, GeneralSecurityException {
 		UriBuilder uriBuilder = UriBuilder.fromUri(new URI(MOTIVOSITY_BASE_URL + "/oauth2/v1/token"));
 		uriBuilder.queryParam("code", code);
-		uriBuilder.queryParam("client_id", CLIENT_ID);
-		uriBuilder.queryParam("client_secret", CLIENT_SECRET);
-		uriBuilder.queryParam("redirect_uri", REDIRECT_URI);
-		uriBuilder.queryParam("grant_type", "authorization_code");
+		uriBuilder.queryParam("appId", APP_ID);
+		uriBuilder.queryParam("appSecret", APP_SECRET);
+		uriBuilder.queryParam("redirectUri", REDIRECT_URI);
+		uriBuilder.queryParam("grantType", "authorization_code");
 
 		System.out.println("\n>> calling token endpoint: " + uriBuilder.toTemplate());
 
