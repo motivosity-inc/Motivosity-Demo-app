@@ -1,3 +1,18 @@
+Motivosity - Javascript Demo
+
+This sample shows a pure javascript browser to server interaction.
+
+How to use:
+- Deploy the 'motivosity-demo' directory into an existing web server environment.
+- Copy the fully qualified domain of the directory's location
+- In Motivosity, enable the 'Javascript' Motivosity integration in the Setup->Integrations area and paste the domain into the CORS field.
+- In Motivosity, click on 'View Details' of the newly created integration and copy the app_id.
+- Go to your-server/motivosity-demo/index.html and paste the app_id into the right field and fill out the other fields appropriately.
+- Click on 'Sign in'
+- Click on 'List Motivosity Users'
+
+
+
 Motivosity - OAuth Demo
 
 This sample project shows a server to server OAuth 2 authorization flow between a webserver and Motivosity.
@@ -6,7 +21,7 @@ How to bring to life:
 - this project uses maven for resolving dependencies so first you have to install Java 8 and Maven (https://maven.apache.org/)
 - to resolve dependencies simple type "mvn clean install"
 - to start the app import the project in your IDE and then execute the OauthDempApplication class. It starts up an embedded Tomcat server on port 8090
-- type http://localhost:9080 in your browser
+- type http://localhost:8090 in your browser
 
 
 How to test:
