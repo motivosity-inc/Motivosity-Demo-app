@@ -2,10 +2,14 @@
 <body>
 	<h1>Motivosity- OAuth Demo</h1>
 
+
+	<a href='/api/authorize'>Authorize Test App at Motivosity</a>
+
+	<br><br>
+	<button (click)='refreshToken()'>Refresh token</button>
 	<!-- The getUserList() function will handle your click on this button. See: /angular/app/app.component.js -->
 	<button (click)='getUserList()'>List Motivosity Users</button>
-	<br>
-	<a href='/api/authorize'>Authorize Test App at Motivosity</a>
+	<br><br>
 
 	<!-- This section lists the users if the 'userList' variable has any value. See: /angular/app/app.component.js -->
 	<ul>
