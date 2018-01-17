@@ -2,7 +2,7 @@
 
 	var serverComponent = ng.core.Component({
 		selector: 'server-app',
-		templateUrl: '../../server-app-component.html'
+		templateUrl: 'server-app-component.html'
 	})
 		.Class({
 			constructor: function () {
@@ -36,7 +36,7 @@
 
 	var jsComponent = ng.core.Component({
 		selector: 'js-app',
-		templateUrl: '../../js-app-component.html'
+		templateUrl: 'js-app-component.html'
 	})
 		.Class({
 			constructor: function () {
@@ -103,7 +103,7 @@
 	app.AppComponent =
 		ng.core.Component({
 			selector: 'demo',
-			templateUrl: '../../demo-component.html',
+			templateUrl: 'demo-component.html',
 			directives: [serverComponent, jsComponent]
 		})
 			.Class({
