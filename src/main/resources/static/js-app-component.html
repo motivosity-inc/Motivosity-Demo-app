@@ -1,0 +1,17 @@
+	<h2>Browser (JS) app</h2>
+	<br>base URL: <input [(ngModel)]="url" style="width: 300px; padding: 1px; margin: 2px;">
+	<br>email: <input [(ngModel)]="loginData.username" style="padding: 1px; margin: 2px;">
+	<br>password: <input type="password" [(ngModel)]="loginData.password" style="padding: 1px; margin: 2px;">
+	<br>appId: <input [(ngModel)]="loginData.appId" style="width: 300px; padding: 1px; margin: 2px;">
+	<br>
+	<br>
+	<button (click)="signin()">Sign In</button>
+	<br><br>
+	<span *ngIf="accessToken != null">access_token = </span><div>{{accessToken}}</div>
+	<br><br>
+	<button (click)='doRefreshToken()'>Refresh token</button>
+	<button (click)='getUserList()'>List Motivosity Users</button>
+	<br><br>
+	<ul>
+		<li *ngFor='let user of userList'>{{user.fullName}}</li>
+	</ul>

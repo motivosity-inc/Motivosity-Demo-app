@@ -42,7 +42,6 @@ import com.motivosity.model.OAuthToken;
 public class DemoController {
 
 	public static final String MOTIVOSITY_BASE_URL = "https://staging.motivosity.com";
-	
 	//public static final String MOTIVOSITY_BASE_URL = "http://localhost:8080/motivosity/";
 
 	public static final String APP_ID = "testapp";
@@ -51,9 +50,8 @@ public class DemoController {
 
 	public static final String REDIRECT_URI = "http://localhost:9080/api/authorize/code";
 
-	//public static final String REQUIRED_SCOPES = "user userlist badge appr platform";
-	
 	public static final String REQUIRED_SCOPES = "default";
+	//public static final String REQUIRED_SCOPES = "user userlist badge appr platform";
 
 	public static OAuthToken token;//never store access token in a static variable. This is just a demo :)
 
@@ -172,8 +170,8 @@ public class DemoController {
 	@RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
 	public void refreshToken() throws URISyntaxException, IOException, GeneralSecurityException {
 		UriBuilder uriBuilder = UriBuilder.fromUri(new URI(MOTIVOSITY_BASE_URL + "/oauth2/v1/token"));
-		uriBuilder.queryParam("client_id", CLIENT_ID);
-		uriBuilder.queryParam("client_secret", CLIENT_SECRET); //TODO ??????
+		uriBuilder.queryParam("appId", APP_ID);
+		uriBuilder.queryParam("appSecret", APP_SECRET);
 		uriBuilder.queryParam("grant_type", "refresh_token");
 		uriBuilder.queryParam("refresh_token", token.getRefreshToken());
 
